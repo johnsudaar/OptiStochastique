@@ -1,0 +1,217 @@
+/*_________________________________________________________
+
+Test functions
+log normal adaptive mutation
+Selection operator: Tournament
+__________________________________________________________*/
+
+\User declarations :
+  /*
+  Equipes :
+0  : Toulouse
+1  : Cergy
+2  : Meudon
+3  : Amneville
+4  : Francais_Volants
+5  : Asnieres
+6  : Valence
+7  : Avignon
+8  : Marseille
+9  : Chambery
+10 : Annecy
+11 : Limoges
+12 : Clermont
+13 : Villard
+14 : Roanne
+15 : Evry
+16 : Strasbourg
+17 : Wasquehal
+*/
+  #define NB_EQUIPE 18
+
+  int classement[NB_EQUIPE] = {1, 3, 4, 7, 8, 11, 12, 16, 18, 2, 5, 6, 9, 10, 13, 14, 15, 17};
+  double distances[NB_EQUIPE][NB_EQUIPE] = {
+  {0.0   , 717.0, 667.0, 1015.0, 673.0, 686.0, 449.0, 344.0, 417.0 , 604.0, 665.0, 291.0, 408.0, 517.0, 504.0, 668.0, 973.0, 901.0},
+  {717.0 , 0.0  , 52.0 , 364.0 , 42.0 , 22.0 , 599.0, 727.0, 813.0 , 610.0, 597.0, 426.0, 458.0, 634.0, 435.0, 70.0 , 526.0, 236.0},
+  {667.0 , 52.0 , 0.0  , 340.0 , 7.0  , 20.0 , 558.0, 686.0, 772.0 , 569.0, 556.0, 376.0, 409.0, 593.0, 394.0, 29.0 , 502.0, 239.0},
+  {1015.0, 364.0, 340.0, 0.0   , 332.0, 336.0, 572.0, 700.0, 787.0 , 583.0, 555.0, 725.0, 615.0, 607.0, 487.0, 340.0, 176.0, 391.0},
+  {673.0 , 42.0 , 7.0  , 332.0 , 0.0  , 14.0 , 563.0, 691.0, 777.0 , 574.0, 561.0, 385.0, 417.0, 598.0, 399.0, 35.0 , 494.0, 232.0},
+  {686.0 , 22.0 , 20.0 , 336.0 , 14.0 , 0.0  , 574.0, 702.0, 788.0 , 585.0, 572.0, 396.0, 428.0, 609.0, 410.0, 46.0 , 507.0, 224.0},
+  {449.0 , 599.0, 558.0, 572.0 , 563.0, 574.0, 0.0  , 130.0, 217.0 , 154.0, 216.0, 506.0, 264.0, 68.0 , 205.0, 531.0, 592.0, 793.0},
+  {344.0 , 727.0, 686.0, 700.0 , 691.0, 702.0, 130.0, 0.0  , 95.0  , 286.0, 347.0, 634.0, 392.0, 199.0, 333.0, 659.0, 720.0, 921.0},
+  {417.0 , 813.0, 772.0, 787.0 , 777.0, 788.0, 217.0, 95.0 , 0.0   , 372.0, 434.0, 692.0, 479.0, 286.0, 419.0, 746.0, 807.0, 1007.0},
+  {604.0 , 610.0, 569.0, 583.0 , 574.0, 585.0, 154.0, 286.0, 372.0 , 0.0  , 62.0 , 516.0, 273.0, 102.0, 197.0, 542.0, 479.0, 804.0},
+  {665.0 , 597.0, 556.0, 555.0 , 561.0, 572.0, 216.0, 347.0, 434.0 , 62.0 , 0.0  , 558.0, 316.0, 161.0, 240.0, 530.0, 432.0, 775.0},
+  {291.0 , 426.0, 376.0, 725.0 , 385.0, 396.0, 506.0, 634.0, 692.0 , 516.0, 558.0, 0.0  , 259.0, 540.0, 289.0, 381.0, 731.0, 613.0},
+  {408.0 , 458.0, 409.0, 615.0 , 417.0, 428.0, 264.0, 392.0, 479.0 , 273.0, 316.0, 259.0, 0.0  , 296.0, 111.0, 410.0, 635.0, 642.0},
+  {517.0 , 634.0, 593.0, 607.0 , 598.0, 609.0, 68.0 , 199.0, 286.0 , 102.0, 161.0, 540.0, 296.0, 0.0  , 219.0, 564.0, 597.0, 826.0},
+  {504.0 , 435.0, 394.0, 487.0 , 399.0, 410.0, 205.0, 333.0, 419.0 , 197.0, 240.0, 289.0, 111.0, 219.0, 0.0  , 370.0, 505.0, 622.0},
+  {668.0 , 70.0 , 29.0 , 340.0 , 35.0 , 46.0 , 531.0, 659.0, 746.0 , 542.0, 530.0, 381.0, 410.0, 564.0, 370.0, 0.0  , 503.0, 255.0},
+  {973.0 , 526.0, 502.0, 176.0 , 494.0, 507.0, 592.0, 720.0, 807.0 , 479.0, 432.0, 731.0, 635.0, 597.0, 505.0, 503.0, 0.0  , 553.0},
+  {901.0 , 236.0, 239.0, 391.0 , 232.0, 224.0, 793.0, 921.0, 1007.0, 804.0, 775.0, 613.0, 642.0, 826.0, 622.0, 255.0, 553.0, 0.0},
+};
+  const char *noms[NB_EQUIPE] = {
+    "Toulouse",
+    "Cergy",
+    "Meudon",
+    "Amneville",
+    "Francais_Volants",
+    "Asnieres",
+    "Valence",
+    "Avignon",
+    "Marseille",
+    "Chambery",
+    "Annecy",
+    "Limoges",
+    "Clermont",
+    "Villard",
+    "Roanne",
+    "Evry",
+    "Strasbourg",
+    "Wasquehal"
+  };
+  float pMutPerGene = 0.001;
+\end
+
+
+\User functions:
+\end
+
+
+\User classes :
+
+  GenomeClass {
+    int poolA[NB_EQUIPE/2];
+    int poolB[NB_EQUIPE/2];
+  }
+
+\end
+
+
+\GenomeClass::display:
+  printf("Pool A :\n");
+  for(int i = 0; i < NB_EQUIPE/2; i++){
+    printf("%s\n", noms[Genome.poolA[i]]);
+  }
+
+  printf("Pool B :\n");
+  for(int i = 0; i < NB_EQUIPE/2; i++){
+    printf("%s\n", noms[Genome.poolB[i]]);
+  }
+\end
+
+
+\GenomeClass::initialiser : // "initializer" is also accepted
+  int size_a = 0;
+  int size_b = 0;
+  for(int i = 0; i < NB_EQUIPE; i++){
+    if( tossCoing() && size_a < NB_EQUIPE / 2) {
+      // On a tiré A et il y a de la place dans A
+      Genome.poolA[size_a] = i;
+      size_a ++;
+    } else if( size_b < NB_EQUIPE / 2){
+      // On a tiré B et il y a de la place dans B
+      // Ou A est plein
+      Genome.poolB[size_b] = i;
+      size_b ++;
+    } else {
+      // On a tiré B mais B est plein
+      Genome.poolA[size_a] = i;
+      size_a ++;
+    }
+  }
+\end
+
+
+\GenomeClass::crossover :
+  // int locus = random(1, SIZE);
+  //
+  // int x1 = 0, x2 = 0, p1 = 0 , p2 = 0;
+  //
+  // for(int i =0; i <SIZE ; i++){
+  //   x1+=(i<locus ? parent1.x[i] : parent2.x[i]);
+  //   x2+=(i<locus ? parent2.x[i] : parent1.x[i]);
+  //   p1 += parent1.x[i];
+  //   p2 += parent2.x[i];
+  // }
+  //
+  // if(x1 > x2 && x1 > p1 && x1 > p2) {
+  //   for(int i = locus; i < SIZE; i++){
+  //     child.x[i] = parent2.x[i];
+  //   }
+  // } else if(x2>p1 && x2 > p2){
+  //   for(int i = 0; i < locus; i++){
+  //     child.x[i] = parent2.x[i];
+  //   }
+  // } else if(p2 > p1){
+  //   for(int i = 0; i < SIZE; i++){
+  //     child.x[i] = parent2.x[i];
+  //   }
+  // }
+
+\end
+
+
+\GenomeClass::mutator : // Must return the number of mutations
+  // int NbMut=0;
+  // float pond = 1./sqrt((float)SIZE);
+  //
+  //   for (int i=0; i < SIZE; i++){
+  //     if (tossCoin(pMutPerGene)){
+  //       NbMut++;
+  //       Genome.x[i] = (Genome.x[i] + 1) % 2;
+  //     }
+  //   }
+  //
+  // return NbMut;
+\end
+
+
+\GenomeClass::evaluator : // Returns the score
+{
+  // float score = 0.0;
+  //
+  // for(int i = 0; i < SIZE; i++){
+  //   score += Genome.x[i];
+  // }
+  //
+  // return score;
+}
+\end
+
+
+\User Makefile options:
+\end
+
+
+\Default run parameters :        // Please let the parameters appear in this order
+  Number of generations : 200     // NB_GEN
+  Time limit: 0       // In seconds, 0 to deactivate
+  Population size : 1024      //POP_SIZE
+  Offspring size : 1024 // 40%
+  Mutation probability : 1       // MUT_PROB
+  Crossover probability : 1      // XOVER_PROB
+  Evaluator goal : maximise      // Maximise
+  Selection operator: Tournament 2.0
+  Surviving parents: 100%//percentage or absolute
+  Surviving offspring: 100%
+  Reduce parents operator: Tournament 2
+  Reduce offspring operator: Tournament 2
+  Final reduce operator: Tournament 2
+
+  Elitism: Strong     //Weak or Strong
+  Elite: 1
+  Print stats: true       //Default: 1
+  Generate csv stats file:false
+  Generate gnuplot script:false
+  Generate R script:false
+  Plot stats:true       //Default: 0
+
+  Remote island model: false
+  IP file: ip.txt       //File containing all the remote island's IP
+  Server port : 2929
+  Migration probability: 0.33
+
+  Save population: false
+  Start from file:false
+\end
