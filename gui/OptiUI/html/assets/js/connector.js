@@ -21,8 +21,6 @@ $( window ).load(function() {
             connector.sendResults.connect(function(i){
                 console.log(i);
             });
-
-            connector.compute(10);
         });
     };
 });

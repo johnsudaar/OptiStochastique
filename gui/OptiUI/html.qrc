@@ -11,5 +11,7 @@
         <file>html/assets/js/app.js</file>
         <file>html/assets/js/qwebchannel.js</file>
         <file>html/assets/js/connector.js</file>
+        <file>html/assets/css/nouislider.min.css</file>
+        <file>html/assets/js/nouislider.min.js</file>
     </qresource>
 </RCC>

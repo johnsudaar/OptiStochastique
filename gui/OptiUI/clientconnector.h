@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QJsonArray>
+#include <QVariantList>
 
 class ClientConnector : public QObject
 {
@@ -13,7 +15,7 @@ public:
 signals:
     void sendResults(int i);
 public slots:
-    void compute(int i);
+    void compute(QVariantList classement, QVariantList distanceMatrix, double coeff);
 };
 
 #endif // CLIENTCONNECTOR_H

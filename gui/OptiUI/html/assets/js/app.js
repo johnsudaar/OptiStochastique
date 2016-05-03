@@ -230,6 +230,30 @@ $( window ).load(function() {
 
     rebuildView();
 
+    var slider = document.getElementById('coeff-slider');
+
+    noUiSlider.create(slider, {
+        start: 0,
+        range: {
+            'min': [ 0 ],
+            'max': [ 100 ]
+        },
+        pips: {
+            mode: 'positions',
+            values: [0,100],
+            density: 4,
+            format: {
+                to: function ( value ) {
+                    return value === 0 ? "Distance" : "Classement";
+                },
+                from: function ( value ) {
+                    return value === 0 ? "Distance" : "Classement";
+                }
+            },
+            stepped: true
+        }
+    });
+
     showPane("recap");
     $("#recap-link").click(function(){
         buildRecapView();

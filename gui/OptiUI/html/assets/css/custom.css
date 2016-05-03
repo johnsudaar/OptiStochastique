@@ -18,3 +18,11 @@ h2{
 .map{
     height:300px;
 }
+
+.control{
+    margin:0px 10px 80px 0px;
+}
+
+.slider-container{
+    margin:0px 30px 50px 40px;
+}
