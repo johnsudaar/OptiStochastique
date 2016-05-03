@@ -1,11 +1,34 @@
-#include "mainwindow.h"
+#include "websocketclientwrapper.h"
+#include "websockettransport.h"
+#include "clientconnector.h"
 #include <QApplication>
 #include <QWebEngineView>
 #include <QWebEngineSettings>
+#include <QWebSocketServer>
+#include <QWebChannel>
+#include <QMainWindow>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+
+    /* ---- WEBSOCKET SERVER ---- */
+
+    QWebSocketServer server(QStringLiteral("Optimisation Server"), QWebSocketServer::NonSecureMode);
+    if(!server.listen(QHostAddress::LocalHost, 1337)){
+        qFatal("Cannot open WebSocket server");
+        return 1;
+    }
+
+    WebSocketClientWrapper clientWrapper(&server);
+    QWebChannel channel;
+
+    QObject::connect(&clientWrapper, &WebSocketClientWrapper::clientConnected, &channel, &QWebChannel::connectTo);
+    ClientConnector connector;
+    channel.registerObject(QStringLiteral("connector"),&connector);
+
+    /* ---- WEB VIEW ---- */
 
     QWebEngineView *webview = new QWebEngineView();
 

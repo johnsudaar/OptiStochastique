@@ -9,5 +9,7 @@
         <file>html/assets/fonts/photon-entypo.woff</file>
         <file>html/assets/js/jquery.min.js</file>
         <file>html/assets/js/app.js</file>
+        <file>html/assets/js/qwebchannel.js</file>
+        <file>html/assets/js/connector.js</file>
     </qresource>
 </RCC>
