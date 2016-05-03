@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>html/index.html</file>
+        <file>html/assets/css/custom.css</file>
+        <file>html/assets/css/photon.css</file>
+        <file>html/assets/fonts/photon-entypo.eot</file>
+        <file>html/assets/fonts/photon-entypo.svg</file>
+        <file>html/assets/fonts/photon-entypo.ttf</file>
+        <file>html/assets/fonts/photon-entypo.woff</file>
+        <file>html/assets/js/jquery.min.js</file>
+        <file>html/assets/js/app.js</file>
+    </qresource>
+</RCC>

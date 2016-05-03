@@ -1,0 +1,20 @@
+.c-pane{
+    padding: 10px 0px 10px 0px;
+    margin-top:0;
+}
+
+h2{
+    padding: 0px 10px 0px 10px;
+    margin-top:0;
+}
+
+
+.icon-link{
+    color: black !important;
+    cursor: pointer;
+    margin-left:10px;
+}
+
+.map{
+    height:300px;
+}

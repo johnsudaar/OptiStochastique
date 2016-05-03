@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>Opti</title>
+
+        <meta charset="UTF-8">
+
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="assets/css/photon.css">
+        <link rel="stylesheet" href="assets/css/custom.css">
+
+        <script src="assets/js/jquery.min.js" charset="utf-8"></script>
+        <script src="assets/js/app.js" charset="utf-8"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyBhGOHOS5lC8z9we_rq9j750X71IvI_YZQ"></script>
+
+</head>
+
+<body>
+    <div class="window">
+        <div class="window-content">
+                <div class="pane-group">
+                        <div class="pane-sm sidebar">
+                                <nav class="nav-group">
+                                        <h5 class="nav-group-title">Parametrage</h5>
+                                        <a class="nav-group-item active" id="recap-link">
+                                                <span class="icon icon-home"></span>
+                                                Récapitulatif
+                                        </a>
+                                        <span class="nav-group-item" id="dist-link">
+                                                <span class="icon icon-map"></span>
+                                                Matrice de distance
+                                        </span>
+                                        <span class="nav-group-item" id="team-link">
+                                                <span class="icon icon-users"></span>
+                                                Liste des équipes
+                                        </span>
+                                        <h5 class="nav-group-title"> Results</h5>
+                                        <span class="nav-group-item" id="results-link">
+                                                <span class="icon icon-cog"></span>
+                                                Résultats
+                                        </span>
+                                </nav>
+                        </div>
+
+<!--                        Recapitulatif                        -->
+
+                        <div class="pane c-pane recap">
+                            <h2> Liste des équipes </h2>
+                            <table class="table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Classement </th>
+                                        <th>Nom</th>
+                                        <th>Lieux</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recap-table">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pane c-pane recap">
+                            <h2> Map </h2>
+                            <div class="map" id="recap-map"></div>
+                        </div>
+
+<!--                        Matrice de distance-->
+                        <div class="pane c-pane dist">
+                            <h2> Matrice de distances
+                                <button class="btn btn-default center-block" id="recomputeMatrix">
+                                    ReCompute
+                                </button>
+                            </h2>
+                            <table class="table-striped" id="matrix-table">
+                            </table>
+                        </div>
+
+<!--                        Liste des equipes-->
+                        <div class="pane c-pane team">
+                            <h2> Liste des équipes : </h2>
+                            <table class="table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Classement</th>
+                                        <th>Nom</th>
+                                        <th>Lieux</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="team-table">
+
+                                </tbody>
+                            </table>
+                        </div>
+
+<!--                        Resultats-->
+                        <div class="pane c-pane results results-ok">
+                            <h2> Pool A : </h2>
+                            <h2> Pool B : </h2>
+                        </div>
+
+                        <div class="pane c-pane results results-ok">
+                            <h2> Map </h2>
+                        </div>
+                        <div class="pane c-pane results results-failed">
+                            <h1> Aucun résultats </h1>
+                        </div>
+                </div>
+            </div>
+            <footer class="toolbar toolbar-footer">
+                    <h1 class="title">Projet d'optimisation stochastique - Unistra 2016 - Kobersi Pauline & Hurter Jonathan</h1>
+            </footer>
+    </div>
+</body>
+</html>

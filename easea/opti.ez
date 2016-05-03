@@ -28,7 +28,7 @@ __________________________________________________________*/
 17 : Wasquehal
 */
   #define NB_EQUIPE 18
-
+  int coeff = 0;
   int classement[NB_EQUIPE] = {1, 3, 4, 7, 8, 11, 12, 16, 18, 2, 5, 6, 9, 10, 13, 14, 15, 17};
   double distances[NB_EQUIPE][NB_EQUIPE] = {
   {0.0   , 717.0, 667.0, 1015.0, 673.0, 686.0, 449.0, 344.0, 417.0 , 604.0, 665.0, 291.0, 408.0, 517.0, 504.0, 668.0, 973.0, 901.0},
@@ -75,6 +75,43 @@ __________________________________________________________*/
 
 
 \User functions:
+bool isInPool(int n, int *pool, int size){
+  for(int i = 0; i < size ; i ++){
+    if(pool[i] == n){
+      return true;
+    }
+  }
+  return false;
+}
+
+int firstPossibleFromPool(int *source, int *dest, int dest_size){
+  for(int i = 0; i < NB_EQUIPE / 2 ; i++){
+    if(! isInPool(source[i], dest, dest_size)){
+      return source[i];
+    }
+  }
+
+  return -1;
+}
+
+int firstPossible(int *dest, int dest_size){
+  for(int i = 0; i < NB_EQUIPE; i++){
+    if(! isInPool(i, dest, dest_size)){
+      return i;
+    }
+  }
+  return -1;
+}
+
+
+int compareClassement( const void* a, const void* b)
+{
+  int p1 = *(int*)a;
+  int p2 = *(int*)b;
+
+  return classement[p1] - classement[p2];
+}
+
 \end
 
 
@@ -89,23 +126,36 @@ __________________________________________________________*/
 
 
 \GenomeClass::display:
+
   printf("Pool A :\n");
   for(int i = 0; i < NB_EQUIPE/2; i++){
-    printf("%s\n", noms[Genome.poolA[i]]);
+    printf("%s (%d)\n", noms[Genome.poolA[i]], classement[Genome.poolA[i]]);
   }
 
   printf("Pool B :\n");
   for(int i = 0; i < NB_EQUIPE/2; i++){
-    printf("%s\n", noms[Genome.poolB[i]]);
+    printf("%s (%d)\n", noms[Genome.poolB[i]], classement[Genome.poolB[i]]);
   }
+
+  float score2 = 0.0;
+  for(int i = 0; i < NB_EQUIPE / 2 ; i++){
+    for(int j = 0; j < NB_EQUIPE / 2 ; j++){
+      score2 += distances[Genome.poolA[i]][Genome.poolA[j]];
+      score2 += distances[Genome.poolB[i]][Genome.poolB[j]];
+    }
+  }
+
+  printf("Dist : %lf\n", score2);
 \end
 
 
 \GenomeClass::initialiser : // "initializer" is also accepted
+  coeff = setVariable("u3", 110);
+
   int size_a = 0;
   int size_b = 0;
   for(int i = 0; i < NB_EQUIPE; i++){
-    if( tossCoing() && size_a < NB_EQUIPE / 2) {
+    if( tossCoin() && size_a < NB_EQUIPE / 2) {
       // On a tiré A et il y a de la place dans A
       Genome.poolA[size_a] = i;
       size_a ++;
@@ -124,58 +174,87 @@ __________________________________________________________*/
 
 
 \GenomeClass::crossover :
-  // int locus = random(1, SIZE);
-  //
-  // int x1 = 0, x2 = 0, p1 = 0 , p2 = 0;
-  //
-  // for(int i =0; i <SIZE ; i++){
-  //   x1+=(i<locus ? parent1.x[i] : parent2.x[i]);
-  //   x2+=(i<locus ? parent2.x[i] : parent1.x[i]);
-  //   p1 += parent1.x[i];
-  //   p2 += parent2.x[i];
-  // }
-  //
-  // if(x1 > x2 && x1 > p1 && x1 > p2) {
-  //   for(int i = locus; i < SIZE; i++){
-  //     child.x[i] = parent2.x[i];
-  //   }
-  // } else if(x2>p1 && x2 > p2){
-  //   for(int i = 0; i < locus; i++){
-  //     child.x[i] = parent2.x[i];
-  //   }
-  // } else if(p2 > p1){
-  //   for(int i = 0; i < SIZE; i++){
-  //     child.x[i] = parent2.x[i];
-  //   }
-  // }
+  for(int i = 0; i < NB_EQUIPE/2; i++){
+    int team = -1;
+    if(tossCoin()){
+      // On essaie de prendre du parent 1.
+      team = firstPossibleFromPool(parent1.poolA, child.poolA, i);
+    }
+    if(team == -1){
+      // Si on a pas pris du parent 1 ou si ca a échoué.
+      team = firstPossibleFromPool(parent2.poolA, child.poolA, i);
+    }
 
+    if(team == -1){
+      // Si aucun des parents ne fonctionne
+      team = firstPossible(child.poolA, i);
+    }
+  }
+
+  int size_b = 0;
+
+  for(int i = 0; size_b < NB_EQUIPE / 2; i++){
+    // On complete avec les données manquantes.
+    if(! isInPool(i, child.poolA, NB_EQUIPE / 2)){
+      child.poolB[size_b] = i;
+      size_b ++;
+    }
+  }
 \end
 
 
 \GenomeClass::mutator : // Must return the number of mutations
-  // int NbMut=0;
-  // float pond = 1./sqrt((float)SIZE);
-  //
-  //   for (int i=0; i < SIZE; i++){
-  //     if (tossCoin(pMutPerGene)){
-  //       NbMut++;
-  //       Genome.x[i] = (Genome.x[i] + 1) % 2;
-  //     }
-  //   }
-  //
-  // return NbMut;
+  int nb_mut = 0;
+  for(int i = 0; i < NB_EQUIPE / 2; i++){
+    if( tossCoin(pMutPerGene) ){
+      int pos_a = random(0, NB_EQUIPE / 2);
+      int pos_b = random(0, NB_EQUIPE / 2);
+
+      int temp = Genome.poolA[pos_a];
+      Genome.poolA[pos_a] = Genome.poolB[pos_b];
+      Genome.poolB[pos_b] = temp;
+      nb_mut ++;
+    }
+  }
+  return nb_mut;
 \end
 
 
 \GenomeClass::evaluator : // Returns the score
 {
-  // float score = 0.0;
-  //
-  // for(int i = 0; i < SIZE; i++){
-  //   score += Genome.x[i];
-  // }
-  //
-  // return score;
+  double score_dist  = 0.0;
+  double score_class = 0.0;
+
+
+  // Ajout des distances
+  for(int i = 0; i < NB_EQUIPE / 2 ; i++){
+    for(int j = 0; j < NB_EQUIPE / 2 ; j++){
+      score_dist += distances[Genome.poolA[i]][Genome.poolA[j]];
+      score_dist += distances[Genome.poolB[i]][Genome.poolB[j]];
+    }
+  }
+
+  // Ajout des différences de points
+
+  qsort(Genome.poolA, NB_EQUIPE / 2, sizeof(int), compareClassement);
+  qsort(Genome.poolB, NB_EQUIPE / 2, sizeof(int), compareClassement);
+
+  for(int i = 0; i < NB_EQUIPE / 2; i++){
+    int diff = classement[Genome.poolA[i]] - classement[Genome.poolB[i]];
+    if(diff < 0){
+      score_class -= diff;
+    } else {
+      score_class += diff;
+    }
+  }
+
+  double distance = (coeff*score_class + score_dist) / sqrt(pow(coeff,2.0) + 1);
+  if(distance < 0){
+    distance = -1*distance;
+  }
+
+  // Point (x: dist, y: class)
+  return distance;
 }
 \end
 
@@ -191,7 +270,7 @@ __________________________________________________________*/
   Offspring size : 1024 // 40%
   Mutation probability : 1       // MUT_PROB
   Crossover probability : 1      // XOVER_PROB
-  Evaluator goal : maximise      // Maximise
+  Evaluator goal : minimise      // Maximise
   Selection operator: Tournament 2.0
   Surviving parents: 100%//percentage or absolute
   Surviving offspring: 100%
@@ -205,7 +284,7 @@ __________________________________________________________*/
   Generate csv stats file:false
   Generate gnuplot script:false
   Generate R script:false
-  Plot stats:true       //Default: 0
+  Plot stats:false       //Default: 0
 
   Remote island model: false
   IP file: ip.txt       //File containing all the remote island's IP
