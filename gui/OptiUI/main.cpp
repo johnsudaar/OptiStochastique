@@ -40,6 +40,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    qDebug() << "Listenning ...";
+
     WebSocketClientWrapper clientWrapper(&server);
     QWebChannel channel;
 
@@ -49,23 +51,27 @@ int main(int argc, char *argv[])
 
     /* ---- WEB VIEW ---- */
 
-    QWebEngineView *webview = new QWebEngineView();
+//    QWebEngineView *webview = new QWebEngineView();
 
-    QWebEngineSettings *defaultSettings = webview->settings();
+//    QWebEngineSettings *defaultSettings = webview->settings();
 
-    defaultSettings->setAttribute(QWebEngineSettings::LocalStorageEnabled, true);
-    defaultSettings->setAttribute(QWebEngineSettings::JavascriptEnabled,true);
-    //defaultSettings->setOfflineWebApplicationCachePath(QDir::homePath()+"/xscreen");
-    //defaultSettings->enablePersistentStorage(QDir::homePath()+"/xscreen");
-    //defaultSettings->setAttribute(QWebEngineSettings::, true);
+//    defaultSettings->setAttribute(QWebEngineSettings::LocalStorageEnabled, true);
+//    defaultSettings->setAttribute(QWebEngineSettings::JavascriptEnabled,true);
+//    //defaultSettings->setOfflineWebApplicationCachePath(QDir::homePath()+"/xscreen");
+//    //defaultSettings->enablePersistentStorage(QDir::homePath()+"/xscreen");
+//    //defaultSettings->setAttribute(QWebEngineSettings::, true);
 
-    webview->load(QUrl("qrc:/html/index.html"));
+//    webview->load(QUrl("qrc:/html/index.html"));
 
-    QMainWindow *window = new QMainWindow();
+//    QMainWindow *window = new QMainWindow();
 
-    window->setCentralWidget(webview);
-    window->setWindowTitle("Optimisation Stochastique");
-    window->show();
+//    window->setCentralWidget(webview);
+//    window->setWindowTitle("Optimisation Stochastique");
+//    window->show();
 
-    return a.exec();
+//    return a.exec();
+    while(true){
+        sleep(100);
+    }
+    return 1;
 }
