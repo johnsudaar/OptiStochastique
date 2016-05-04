@@ -15,6 +15,10 @@ h2{
     margin-left:10px;
 }
 
+.noUi-pips-horizontal{
+    height: 30px;
+}
+
 .map{
     height:300px;
 }

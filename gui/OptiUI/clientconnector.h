@@ -5,6 +5,14 @@
 #include <QDebug>
 #include <QJsonArray>
 #include <QVariantList>
+#include <stdlib.h>
+#include <iostream>
+#include <time.h>
+#include "COptionParser.h"
+#include "CRandomGenerator.h"
+#include "CEvolutionaryAlgorithm.h"
+#include "global.h"
+#include "easea/optiIndividual.hpp"
 
 class ClientConnector : public QObject
 {
@@ -13,7 +21,7 @@ public:
     explicit ClientConnector(QObject *parent = 0);
 
 signals:
-    void sendResults(int i);
+    void sendResults(QVariantList teamA, QVariantList teamB);
 public slots:
     void compute(QVariantList classement, QVariantList distanceMatrix, double coeff);
 };

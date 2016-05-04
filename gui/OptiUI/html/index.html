@@ -8,6 +8,7 @@
         <!-- Stylesheets -->
         <link rel="stylesheet" href="assets/css/photon.css">
         <link rel="stylesheet" href="assets/css/nouislider.min.css">
+        <link rel="stylesheet" href="assets/css/loading.css">
         <link rel="stylesheet" href="assets/css/custom.css">
 
         <script src="assets/js/jquery.min.js" charset="utf-8"></script>
@@ -110,14 +111,46 @@
 <!--                        Resultats-->
                         <div class="pane c-pane results results-ok">
                             <h2> Pool A : </h2>
+                            <table class="table-striped">
+                                <thead>
+                                    <tr>
+                                        <th> Classement </th>
+                                        <th> Nom </th>
+                                        <th> Lieux </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teama-table">
+
+                                </tbody>
+                            </table>
                             <h2> Pool B : </h2>
+                            <table class="table-striped">
+                                <thead>
+                                    <tr>
+                                        <th> Classement </th>
+                                        <th> Nom </th>
+                                        <th> Lieux </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="teamb-table">
+
+                                </tbody>
+                            </table>
                         </div>
 
                         <div class="pane c-pane results results-ok">
                             <h2> Map </h2>
                         </div>
                         <div class="pane c-pane results results-failed">
-                            <h1> Aucun résultats </h1>
+                            <h1 class="text-center"> Aucun résultats </h1>
+                        </div>
+                        <div class="pane c-pane loading">
+                            <h1 class="text-center"> Chargement </h1>
+                            <div class="cssload-loader">
+                                    <div class="cssload-inner cssload-one"></div>
+                                    <div class="cssload-inner cssload-two"></div>
+                                    <div class="cssload-inner cssload-three"></div>
+                            </div>
                         </div>
                 </div>
             </div>

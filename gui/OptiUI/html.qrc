@@ -13,5 +13,6 @@
         <file>html/assets/js/connector.js</file>
         <file>html/assets/css/nouislider.min.css</file>
         <file>html/assets/js/nouislider.min.js</file>
+        <file>html/assets/css/loading.css</file>
     </qresource>
 </RCC>

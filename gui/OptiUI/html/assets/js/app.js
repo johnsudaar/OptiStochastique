@@ -17,8 +17,6 @@ var teamList =  [
     ["Avignon", "Avignon",16],
     ["Wasquehal", "Wasquehal",17],
     ["Marseille", "Marseille",18],
-
-
 ]
 
 var distMatrix = [];
@@ -27,6 +25,8 @@ var curTeam;
 var nextAction;
 var recapMap;
 var results = null;
+var firstRun = true;
+var coeff_slider;
 
 var rad = function(x) {
     return x * Math.PI / 180;
@@ -178,6 +178,12 @@ function buildMap(container, map){
 }
 
 function buildRecapView2(){
+    if(firstRun){
+        firstRun = false;
+        computeDistances2();
+        showPane("recap");
+    }
+
     recapMap = buildMap("#recap-map", recapMap);
     $("#recap-table").html("");
     for(var pos = 1; pos <= teamList.length; pos++){
@@ -196,6 +202,12 @@ function buildTeamView(){
     });
 }
 
+function showResults(teamA, teamB){
+    results = [teamA, teamB];
+    showPane("results");
+    buildResultsView();
+}
+
 function buildResultsView(){
     if(results === null){
         $(".results-failed").show();
@@ -203,6 +215,16 @@ function buildResultsView(){
     } else {
         $(".results-failed").hide();
         $(".results-ok").show();
+        $("#teama-table").html("");
+        $("#teamb-table").html("");
+        for(i in results[0]){
+            team=teamList[results[0][i]]
+            $("#teama-table").append("<tr><td>"+team[2]+"</td><td>"+team[0]+"</td><td>"+team[1]+"</td></tr>");
+        }
+        for(i in results[1]){
+            team=teamList[results[1][i]]
+            $("#teamb-table").append("<tr><td>"+team[2]+"</td><td>"+team[0]+"</td><td>"+team[1]+"</td></tr>");
+        }
     }
 }
 
@@ -223,6 +245,15 @@ function buildMatrixView(){
     $("#matrix-table").html(str+"</tbody>");
 }
 
+function launch(){
+    classement = [];
+    for(var i = 0; i < teamList.length; i++){
+        classement[i] = teamList[i][2];
+    }
+    window.connector.compute(classement, distMatrix, coeff_slider.noUiSlider.get());
+    showPane("loading");
+}
+
 $( window ).load(function() {
     geocoder = new google.maps.Geocoder();
 
@@ -230,17 +261,17 @@ $( window ).load(function() {
 
     rebuildView();
 
-    var slider = document.getElementById('coeff-slider');
+    coeff_slider = document.getElementById('coeff-slider');
 
-    noUiSlider.create(slider, {
+    noUiSlider.create(coeff_slider, {
         start: 0,
         range: {
             'min': [ 0 ],
-            'max': [ 100 ]
+            'max': [ 100000 ]
         },
         pips: {
             mode: 'positions',
-            values: [0,100],
+            values: [0,100000],
             density: 4,
             format: {
                 to: function ( value ) {
@@ -254,7 +285,7 @@ $( window ).load(function() {
         }
     });
 
-    showPane("recap");
+    showPane("loading");
     $("#recap-link").click(function(){
         buildRecapView();
         showPane("recap");
@@ -276,4 +307,6 @@ $( window ).load(function() {
     });
 
     $("#recomputeMatrix").click(computeDistances);
+
+    $("#launch-calc").click(launch);
 });

@@ -18,8 +18,8 @@ $( window ).load(function() {
         chan = new QWebChannel(socket, function(channel) {
             window.connector = channel.objects.connector;
 
-            connector.sendResults.connect(function(i){
-                console.log(i);
+            connector.sendResults.connect(function(teamA, teamB){
+                showResults(teamA, teamB);
             });
         });
     };

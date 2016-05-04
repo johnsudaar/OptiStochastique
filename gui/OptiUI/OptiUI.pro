@@ -11,11 +11,17 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets webenginewidgets websockets
 TARGET = OptiUI
 TEMPLATE = app
 
+INCLUDEPATH += /usr/local/easea/libeasea/include/
+INCLUDEPATH += /usr/local/easea/boost
+LIBS += /usr/local/easea/libeasea/libeasea.a
+LIBS += /usr/local/easea/boost/program_options.a
+LIBS += -lpthread -fopenmp
 
 SOURCES += main.cpp \
     clientconnector.cpp \
     websocketclientwrapper.cpp \
-    websockettransport.cpp
+    websockettransport.cpp \
+    easea/optiIndividual.cpp
 
 DISTFILES += \
     html/assets/fonts/photon-entypo.eot \
@@ -29,7 +35,8 @@ DISTFILES += \
     html/assets/js/app.js \
     html/assets/js/jquery.min.js \
     html/assets/js/qwebchannel.js \
-    html/assets/js/connector.js
+    html/assets/js/connector.js \
+    html/assets/css/loading.css
 
 RESOURCES += \
     html.qrc
@@ -37,4 +44,5 @@ RESOURCES += \
 HEADERS += \
     clientconnector.h \
     websocketclientwrapper.h \
-    websockettransport.h
+    websockettransport.h \
+    easea/optiIndividual.hpp

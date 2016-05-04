@@ -7,6 +7,24 @@
 #include <QWebSocketServer>
 #include <QWebChannel>
 #include <QMainWindow>
+#include <QFile>
+#include <QSslConfiguration>
+#include <QSslKey>
+#include <QSslCertificate>
+#include <QDebug>
+
+CIndividual** pPopulation = NULL;
+CIndividual*  bBest = NULL;
+float* pEZ_MUT_PROB = NULL;
+float* pEZ_XOVER_PROB = NULL;
+unsigned *EZ_NB_GEN;
+unsigned *EZ_current_generation;
+int EZ_POP_SIZE;
+int OFFSPRING_SIZE;
+int coeff;
+int **distances;
+int *classement;
+int NB_EQUIPE;
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +34,7 @@ int main(int argc, char *argv[])
     /* ---- WEBSOCKET SERVER ---- */
 
     QWebSocketServer server(QStringLiteral("Optimisation Server"), QWebSocketServer::NonSecureMode);
+
     if(!server.listen(QHostAddress::LocalHost, 1337)){
         qFatal("Cannot open WebSocket server");
         return 1;
@@ -38,7 +57,7 @@ int main(int argc, char *argv[])
     defaultSettings->setAttribute(QWebEngineSettings::JavascriptEnabled,true);
     //defaultSettings->setOfflineWebApplicationCachePath(QDir::homePath()+"/xscreen");
     //defaultSettings->enablePersistentStorage(QDir::homePath()+"/xscreen");
-    //defaultSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+    //defaultSettings->setAttribute(QWebEngineSettings::, true);
 
     webview->load(QUrl("qrc:/html/index.html"));
 
