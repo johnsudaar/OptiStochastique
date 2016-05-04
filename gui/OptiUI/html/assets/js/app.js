@@ -19,6 +19,7 @@ var teamList =  [
     ["Marseille", "Marseille",18],
 ]
 
+var modifying = false;
 var distMatrix = [];
 var geocoder;
 var curTeam;
@@ -94,6 +95,7 @@ function launchGeoLoc(){
                 teamList[curTeam][3] = [lat,lng];
                 curTeam ++;
                 setTimeout(launchGeoLoc,100);
+                console.log("Geolocalisation done");
             }
         });
     } else {
@@ -105,7 +107,7 @@ function launchGeoLoc(){
 
 function computeDistances(){
     curTeam = 0;
-    nextAction = computeDistances2();
+    nextAction = computeDistances2;
     launchGeoLoc();
 }
 
@@ -216,13 +218,120 @@ function buildRecapView2(){
     }
 }
 
+function updateRanks(pos) {
+    var rank = teamList[pos][2];
+
+    for(team in teamList) {
+        if (teamList[team][2] > rank) {
+            teamList[team][2] = teamList[team][2] - 1;
+        }
+    }
+}
+
+function modifyTr(tr) {
+    var tds = tr.find("td");
+    var rank = $(tds[0]).text();
+    var nom = $(tds[1]).text();
+    var lieu = $(tds[2]).text();
+
+    $(tds[1]).html("<input type='text' id='nom-team-"+rank+"' class='form-control-2' value='"+nom+"'>");
+    $(tds[2]).html("<input id='adresse-autocomplete-"+rank+"' type='text' class='form-control-2' value='"+lieu+"'>");
+    $(tds[3]).html("<button id='modify-"+rank+"' class='btn btn-form btn-default'>Modifier</button><button id='modify-not-"+rank+"' class='btn btn-form btn-default'>Annuler</button>");
+
+    var c = new google.maps.places.Autocomplete($("#adresse-autocomplete-"+rank)[0]);
+    $("#modify-"+rank).click(function(){
+        if ($("#nom-team-"+rank).val() === "") {
+            if ($("#adresse-autocomplete-"+rank).val() === "") {
+                toastr.error("Il faut remplir le nom et le lieu de l'équipe");
+            }
+            else {
+                toastr.error("Il faut remplir le nom de l'équipe");
+            }
+        }
+        else if ($("#adresse-autocomplete-"+rank).val() === "") {
+            toastr.error("Il faut remplir le lieu de l'équipe");
+        }
+        else {
+            for(team in teamList) {
+                if (teamList[team][2] == rank) {
+
+                    teamList[team][0] = $("#nom-team-"+rank).val();
+                    teamList[team][1] = $("#adresse-autocomplete-"+rank).val();
+                }
+            }
+            modifying = false;
+            initDistMatrix();
+            computeDistances();
+            buildTeamView();
+        }
+    });
+    $("#modify-not-"+rank).click(function(){
+        modifying = false;
+        buildTeamView();
+    });
+
+}
+
+function upTeam(pos) {
+    var rank = teamList[pos][2];
+
+    if (rank != 0) {
+        for(team in teamList) {
+            if (teamList[team][2] == rank-1) {
+                teamList[team][2] = rank;
+            }
+        }
+        teamList[pos][2] = rank - 1;
+    }
+}
+
+function downTeam(pos) {
+    var rank = teamList[pos][2];
+
+    if (rank != teamList.length) {
+        for(team in teamList) {
+            if (teamList[team][2] == rank+1) {
+                teamList[team][2] = rank;
+            }
+        }
+        teamList[pos][2] = rank + 1;
+    }
+}
+
 function buildTeamView(){
     $("#team-table").html("");
+
     for(team in teamList){
-        $("#team-table").append("<tr><td>"+teamList[team][2]+"</td><td>"+teamList[team][0]+"</td><td>"+teamList[team][1]+"</td><td><a class='icon icon-trash icon-link delete-team' id='"+team+"'></a><a class='icon icon-pencil icon-link'></a></td></tr>");
+        $("#team-table").append("<tr><td>"+teamList[team][2]+"</td><td>"+teamList[team][0]+"</td><td>"+teamList[team][1]+"</td><td><a class='icon icon-trash icon-link delete-team' id='"+team+"'></a><a class='icon icon-pencil icon-link modify-team'></a><a id='"+team+"' class='icon icon-up-dir icon-link up-team'></a><a id='"+team+"' class='icon icon-down-dir icon-link down-team'></a></td></tr>");
     }
+
     $(".delete-team").click(function(event){
+        updateRanks(event.target.id);
         teamList.splice(event.target.id,1);
+        initDistMatrix();
+        computeDistances();
+        rebuildView();
+    });
+    $(".modify-team").click(function(event){
+        if (! modifying) {
+            modifying = true;
+            var tr = $(event.target).parent().parent();
+            modifyTr(tr);
+        }
+        else {
+            toastr.error("Vous ne pouvez faire qu'une modification à la fois");
+        }
+    });
+    $(".up-team").click(function(event){
+        upTeam(event.target.id);
+        initDistMatrix();
+        computeDistances();
+        rebuildView();
+    });
+    $(".down-team").click(function(event){
+        downTeam(event.target.id);
+        initDistMatrix();
+        computeDistances();
         rebuildView();
     });
 }
@@ -271,6 +380,28 @@ function buildMatrixView(){
     $("#matrix-table").html(str+"</tbody>");
 }
 
+function createTeam() {
+    if ($("#nom-team").val() === "") {
+        if ($("#adresse-autocomplete").val() === "") {
+            toastr.error("Il faut remplir le nom et le lieu de l'équipe");
+        }
+        else {
+            toastr.error("Il faut remplir le nom de l'équipe");
+        }
+    }
+    else if ($("#adresse-autocomplete").val() === "") {
+        toastr.error("Il faut remplir le lieu de l'équipe");
+    }
+    else {
+        teamList.push([$("#nom-team").val(), $("#adresse-autocomplete").val(), teamList.length + 1]);
+        $("#nom-team").val("");
+        $("#adresse-autocomplete").val("");
+        initDistMatrix();
+        computeDistances();
+        buildTeamView();
+    }
+}
+
 function launch(){
     classement = [];
     for(var i = 0; i < teamList.length; i++){
@@ -282,6 +413,8 @@ function launch(){
 
 $( window ).load(function() {
     geocoder = new google.maps.Geocoder();
+
+    autocomplete_center = new google.maps.places.Autocomplete($("#adresse-autocomplete")[0]);
 
     initDistMatrix();
 
@@ -335,4 +468,18 @@ $( window ).load(function() {
     $("#recomputeMatrix").click(computeDistances);
 
     $("#launch-calc").click(launch);
+
+    $("#button-new-team").click(createTeam);
+
+    $("#recap-map").height($(window).height()-100);
+
+    $("#result-map").height($(window).height()-100);
+
+    $( window ).resize(function() {
+        $("#recap-map").height($(window).height()-100);
+    });
+
+    $( window ).resize(function() {
+        $("#result-map").height($(window).height()-100);
+    });
 });
