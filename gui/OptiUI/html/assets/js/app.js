@@ -208,6 +208,7 @@ function buildRecapView2(){
     if(firstRun){
         firstRun = false;
         computeDistances2();
+
         showPane("recap");
     }
 
@@ -446,23 +447,43 @@ $( window ).load(function() {
 
     showPane("loading");
     $("#recap-link").click(function(){
-        buildRecapView();
-        showPane("recap");
+        if(!firstRun) {
+            buildRecapView();
+            showPane("recap");
+        }
+        else {
+            toastr.error("Vous devez attendre la fin du chargement pour y accéder");
+        }
     });
 
     $("#dist-link").click(function(){
-        buildMatrixView();
-        showPane("dist");
+        if(!firstRun) {
+            buildMatrixView();
+            showPane("dist");
+        }
+        else {
+            toastr.error("Vous devez attendre la fin du chargement pour y accéder");
+        }
     });
 
     $("#team-link").click(function(){
-        buildTeamView();
-        showPane("team");
+        if(!firstRun) {
+            buildTeamView();
+            showPane("team");
+        }
+        else {
+            toastr.error("Vous devez attendre la fin du chargement pour y accéder");
+        }
     });
 
     $("#results-link").click(function(){
-        showPane("results");
-        buildResultsView();
+        if(!firstRun) {
+            showPane("results");
+            buildResultsView();
+        }
+        else {
+            toastr.error("Vous devez attendre la fin du chargement pour y accéder");
+        }
     });
 
     $("#recomputeMatrix").click(computeDistances);
