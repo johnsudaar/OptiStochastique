@@ -14,5 +14,7 @@
         <file>html/assets/css/nouislider.min.css</file>
         <file>html/assets/js/nouislider.min.js</file>
         <file>html/assets/css/loading.css</file>
+        <file>html/assets/pictures/star-blue.png</file>
+        <file>html/assets/pictures/star-red.png</file>
     </qresource>
 </RCC>

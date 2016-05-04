@@ -7,24 +7,30 @@ ClientConnector::ClientConnector(QObject *parent) : QObject(parent)
 
 void ClientConnector::compute(QVariantList rank, QVariantList distanceMatrix, double c){
     int nb_team = rank.size();
-
+    qDebug() << nb_team;
     int* ranks;
-    int** dist;
+    double** dist;
 
     ranks = (int*)malloc(nb_team * sizeof(int));
-    dist = (int**)malloc(nb_team * sizeof(int*));
+    dist = (double**)malloc(nb_team * sizeof(double*));
     for(int i = 0; i < nb_team; i++){
         ranks[i] = rank.at(i).toInt();
     }
     double max = 0;
     for(int i = 0; i < nb_team; i++){
-        dist[i] = (int*)malloc(nb_team *sizeof(int));
+        dist[i] = (double*)malloc(nb_team *sizeof(double));
         QVariantList array = distanceMatrix.at(i).toList();
         for(int j = 0; j < nb_team; j++){
             if(max < array.at(j).toDouble()){
                 max = array.at(j).toDouble();
-                dist[i][j] = array.at(j).toDouble();
             }
+            dist[i][j] = array.at(j).toDouble();
+        }
+    }
+
+    for(int i = 0; i<nb_team; i++){
+        for(int j = 0; j < nb_team; j++){
+            dist[i][j] = dist[i][j]/max;
         }
     }
 
@@ -32,12 +38,6 @@ void ClientConnector::compute(QVariantList rank, QVariantList distanceMatrix, do
     coeff = c;
     classement = ranks;
     NB_EQUIPE = nb_team;
-
-    for(int i = 0; i<nb_team; i++){
-        for(int j = 0; j < nb_team; j++){
-            dist[i][j] = dist[i][j]/max;
-        }
-    }
 
     CEvolutionaryAlgorithm* EA;
 

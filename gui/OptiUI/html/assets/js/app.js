@@ -9,7 +9,7 @@ var teamList =  [
     ["Francais volants", "Paris",8],
     ["Clermont", "Clermont-Ferrand",9],
     ["Villard", "Villard-de-Lans",10],
-    ["Asnieres", "asnieres sur seine",11],
+    ["Asnieres", "Asnières",11],
     ["Valence", "Valence",12],
     ["Roanne", "Roanne",13],
     ["Evry", "Evry",14],
@@ -24,6 +24,7 @@ var geocoder;
 var curTeam;
 var nextAction;
 var recapMap;
+var resultMap;
 var results = null;
 var firstRun = true;
 var coeff_slider;
@@ -128,7 +129,7 @@ function buildRecapView(){
 
 }
 
-function placeMarkers(map){
+function placeMarkers(map, use_team){
     if(! map.markers){
         map.markers = [];
     }
@@ -140,17 +141,41 @@ function placeMarkers(map){
 
     map.markers = [];
 
-    for(team in teamList){
-        var marker = new google.maps.Marker({
-            position: {lat:teamList[team][3][0], lng:teamList[team][3][1]},
-            map: map,
-            title: teamList[team][0]
-          });
-        map.markers.push(marker);
+    if(! use_team){
+        for(team in teamList){
+            var marker = new google.maps.Marker({
+                position: {lat:teamList[team][3][0], lng:teamList[team][3][1]},
+                map: map,
+                title: teamList[team][0]
+              });
+            map.markers.push(marker);
+        }
+    } else {
+        for(i in results[0]){
+            var team = teamList[results[0][i]];
+            var marker = new google.maps.Marker({
+                position: {lat:team[3][0], lng:team[3][1]},
+                map: map,
+                icon: "assets/pictures/star-blue.png",
+                title: team[0]
+              });
+            map.markers.push(marker);
+        }
+
+        for(i in results[1]){
+            var team = teamList[results[1][i]];
+            var marker = new google.maps.Marker({
+                position: {lat:team[3][0], lng:team[3][1]},
+                map: map,
+                icon: "assets/pictures/star-red.png",
+                title: team[0]
+            });
+            map.markers.push(marker);
+        }
     }
 }
 
-function buildMap(container, map){
+function buildMap(container, map, use_team){
     var bounds = new google.maps.LatLngBounds();
     for(team in teamList) {
         bounds.extend(new google.maps.LatLng(teamList[team][3][0],teamList[team][3][1]));
@@ -173,7 +198,7 @@ function buildMap(container, map){
         }
     }
 
-    placeMarkers(map);
+    placeMarkers(map,use_team);
     return map;
 }
 
@@ -184,7 +209,7 @@ function buildRecapView2(){
         showPane("recap");
     }
 
-    recapMap = buildMap("#recap-map", recapMap);
+    recapMap = buildMap("#recap-map", recapMap, false);
     $("#recap-table").html("");
     for(var pos = 1; pos <= teamList.length; pos++){
         $("#recap-table").append("<tr><td>"+pos+"</td><td>"+teamInPos(pos)[0]+"</td><td>"+teamInPos(pos)[1]+"</td></tr>");
@@ -215,6 +240,7 @@ function buildResultsView(){
     } else {
         $(".results-failed").hide();
         $(".results-ok").show();
+        recapMap = buildMap("#result-map", resultMap, true);
         $("#teama-table").html("");
         $("#teamb-table").html("");
         for(i in results[0]){

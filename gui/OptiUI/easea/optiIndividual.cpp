@@ -247,6 +247,8 @@ float IndividualImpl::evaluate(){
     }
   }
 
+  //printf("%f\n", coeff);
+
   double distance = (coeff*score_class + score_dist) / sqrt(pow(coeff,2.0) + 1);
   if(distance < 0){
     distance = -1*distance;

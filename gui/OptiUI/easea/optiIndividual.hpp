@@ -24,7 +24,7 @@ class Parameters;
 extern int EZ_POP_SIZE;
 extern int OFFSPRING_SIZE;
 extern int NB_EQUIPE;
-extern int** distances;
+extern double** distances;
 extern int* classement;
 extern int coeff;
 

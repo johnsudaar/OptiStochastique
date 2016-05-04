@@ -22,7 +22,7 @@ unsigned *EZ_current_generation;
 int EZ_POP_SIZE;
 int OFFSPRING_SIZE;
 int coeff;
-int **distances;
+double **distances;
 int *classement;
 int NB_EQUIPE;
 
