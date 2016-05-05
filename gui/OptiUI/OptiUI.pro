@@ -15,7 +15,11 @@ INCLUDEPATH += /usr/local/easea/libeasea/include/
 INCLUDEPATH += /usr/local/easea/boost
 LIBS += /usr/local/easea/libeasea/libeasea.a
 LIBS += /usr/local/easea/boost/program_options.a
-LIBS += -lpthread -fopenmp
+LIBS += -lpthread
+
+unix:!macx {
+    LIBS += -fopenmp
+}
 
 SOURCES += main.cpp \
     clientconnector.cpp \
