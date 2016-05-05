@@ -30,3 +30,20 @@ h2{
 .slider-container{
     margin:0px 30px 50px 40px;
 }
+
+.form-control-2 {
+    display: inline-block;
+    min-height: 25px;
+    padding: 5px 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+}
+
+#new-team {
+    margin-top: 20px;
+    margin-left: 5px;
+}

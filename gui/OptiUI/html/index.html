@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="assets/css/nouislider.min.css">
         <link rel="stylesheet" href="assets/css/loading.css">
         <link rel="stylesheet" href="assets/css/custom.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 
         <script src="assets/js/jquery.min.js" charset="utf-8"></script>
         <script src="assets/js/nouislider.min.js" charset="utf-8"></script>
@@ -17,6 +18,7 @@
         <script src="assets/js/app.js" charset="utf-8"></script>
         <script src="assets/js/connector.js" charset="utf-8"></script>
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyBhGOHOS5lC8z9we_rq9j750X71IvI_YZQ"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js" charset="utf-8"></script>
 
 </head>
 
@@ -106,6 +108,11 @@
 
                                 </tbody>
                             </table>
+                            <div id="new-team">
+                                <input type="text" id="nom-team" class="form-control-2" placeholder="Nom">
+                                <input id="adresse-autocomplete" type="text" class="form-control-2" placeholder="Lieu">
+                                <button id="button-new-team" class="btn btn-form btn-default">Créer une équipe</button>
+                            </div>
                         </div>
 
 <!--                        Resultats-->
